@@ -1,9 +1,3 @@
-# note) 
-# 1. image processing한 데이터 추가하여 학습하기
-# 2. 마지막 optional 부분 구현
-# 3. LeNet 새로운 알고리즘 논문 확인
-# 4. end-to-end 논문 읽기
-
 # **Traffic Sign Recognition** 
 
 ## Writeup
