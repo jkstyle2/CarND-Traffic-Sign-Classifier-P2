@@ -1,8 +1,8 @@
 # note) 
 # 1. image processing한 데이터 추가하여 학습하기
 # 2. 마지막 optional 부분 구현
-# 3. LeNet 새로운 알고리즘 확인
-
+# 3. LeNet 새로운 알고리즘 논문 확인
+# 4. end-to-end 논문 읽기
 
 # **Traffic Sign Recognition** 
 
@@ -45,7 +45,7 @@ The goals / steps of this project are the following:
 [image16]: ./output_images/Histogram.png "Histogram"
 [image17]: ./output_images/Grayscale.png "Grayscale"
 [image18]: ./output_images/Normalization.png "Normalization"
-[image19]: ./images/resized/resized_images.jpg "webimages"
+[image19]: ./images/resized/resized_images.png "webimages"
 [image20]: ./output_images/softmax_prob.png "Softmax_Probability"
 
 
@@ -59,7 +59,7 @@ The goals / steps of this project are the following:
 
 #### 1. Provide a Writeup / README that includes all the rubric points and how you addressed each one. You can submit your writeup as markdown or pdf. You can use this template as a guide for writing the report. The submission includes the project code.
 
-You're reading it! and here is a link to my [project code](https://github.com/udacity/CarND-Traffic-Sign-Classifier-Project/blob/master/Traffic_Sign_Classifier.ipynb)
+You're reading it! and here is a link to my [project code](https://github.com/jkstyle2/CarND-Traffic-Sign-Classifier-Project/blob/master/Traffic_Sign_Classifier.ipynb)
 
 
 ### Data Set Summary & Exploration
@@ -72,12 +72,12 @@ I used the numpy library to calculate summary statistics of the traffic signs da
 * The size of the validation set is "4410"
 * The size of test set is "12630"
 * The shape of a traffic sign image is "(32, 32, 3)"
-* The number of unique classes/labels in the data set is ? "43"
+* The number of unique classes/labels in the data set is "43"
 
 #### 2. Include an exploratory visualization of the dataset.
 
 Here is an exploratory visualization of the data set. 
-The training images randomly chosen are as below:
+The training images are randomly chosen as below:
 ![All_Signs][image15]
 
 It is a bar chart showing how the labels are distributed in each data set:
@@ -95,24 +95,13 @@ Here is an example of a traffic sign image before and after grayscaling.
 ![Grayscale][image17]
 
 
-As a last step, I normalized the image data because it can speed up convergence and the neural networks can perform better when the input(feature) distributions have mean zero. As a suggested way, I used a technique such that (X_train - 128)/128 for the normalization, which results in not exactly zero mean, but fairly easy to implement. 
+As a second step, I normalized the image data because it can speed up convergence and the neural networks can perform better when the input(feature) distributions have mean zero. As a suggested way, I used a technique such that (X_train - 128)/128 for the normalization, which results in not exactly zero mean, but fairly easy to implement. It seems worked great but I still wonder how this technique really made it although it doesn't use the exact mean and variance. 
 The values are all reduced to the range (-1,1) and the resulting outputs are as below.
+
 ![Normalization][image18]
 
 
-
-
-I decided to generate additional data because ... 
-
-To add more data to the the data set, I used the following techniques because ... 
-
-Here is an example of an original image and an augmented image:
-
-![alt text][image16]
-
-The difference between the original data set and the augmented data set is the following ... 
-
-Rumor has it that data augmentation is the single best method to increase accuracy of the model. Because several classes in the data have far fewer samples than others the model will tend to be biased toward those classes with more samples. I implemented augmentation by creating copies of each sample for a class (sometimes several copies) in order to boost the number of samples for the class to 800 (if that class didn't already have at least 800 samples). Each copy is fed into a "jitter" pipeline that randomly translates, scales, warps, and brightness adjusts the image. I sought to keep the parameters for these transformations relatively conservative and keep the sign in the image recognizable. This was by far the most laborious part of the project, and it takes quite some time to run the code.
+For the last step, It is obvious to generate additional data because the number of images in some classes is relatively small. The augmented data set adds extra value to base data so that we can take more abundant information to classify the dataset. Due to the shortage of time, I just skip this step for now, but I will be back to complete this task later when I get more time.
 
 
 #### 2. Describe what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
@@ -236,10 +225,13 @@ My final model consisted of the following layers:
 
 #### 3. Describe how you trained your model. The discussion can include the type of optimizer, the batch size, number of epochs and any hyperparameters such as learning rate.
 
-There are several popular ways to be used for optimization techniques: SGD, SGD+momentum, Adagrad, Adadelta and Adam - methods for finding local optimum (global when dealing with convex problem) of certain differentiable functions. Through the lecture, I could learn SGD using mini-batch and it was quite understandable in terms of its mechanism how it effectively works compared to full-batch Gradient descent method. After that, in the LeNet Lab section, Adam optimizer was suddenly introduced with very brief explanation, and I just have used it without any clear understanding.
+There are several popular ways to use optimization techniques: SGD, SGD+momentum, Adagrad, Adadelta and Adam - methods for finding local optimum (global when dealing with convex problem) of certain differentiable functions. 
+Through the lecture, I learnt about SGD using mini-batch and its mechanism how it effectively works is quite understandable compared to full-batch Gradient descent method. After that, in the LeNet Lab section, Adam optimizer was suddenly introduced with very brief explanation, and I just have used it without any clear understanding.
 
-After taking a look at [this comparison of optimizers](http://int8.io/comparison-of-optimization-techniques-stochastic-gradient-descent-momentum-adagrad-and-adadelta/#AdaGrad_8211_experiments), now I could get some knowledge about Adam, and I decided to use it as an optimizer. With RMSProp and Momentum, it finds a proper direction and a step size.
+After taking a look at [this comparison of optimizers](http://int8.io/comparison-of-optimization-techniques-stochastic-gradient-descent-momentum-adagrad-and-adadelta/#AdaGrad_8211_experiments), now I could get some knowledge about Adam, and I decided to use it as an optimizer. With RMSProp and Momentum, the optimizer can find a proper direction and a step size.
 
+I kept tring to find out the optimum value of hyperparameters such as learning rate, dropout probability and batch size depending on its fitting condition. 
+The results are as below:
 
 | EPOCHS | LEARNING RATE | BATCH SIZE | KEEP PROB  | VAL. ACC. | TEST ACC. | CONCLUSION / ACTION |
 |-------------------|-----------------------------------|---------------------------|---------------------------|----------------------|------------------------|-------------------------------------------------|
@@ -277,11 +269,8 @@ The final parameter settings used are:
 My final model results are:
 * training set accuracy of 100%
 * validation set accuracy of 95.5% 
-* test set accuracy of ? 94.0%
+* test set accuracy of 94.0%
 
-I first implemented the same architecture from the model I learnt in the LeNet Lab. It went well with over 85% validation accuracy, but still needed some modification to reach out to over 93% validation accuracy. To overcome the underfitting issue, I mainly tuned some parameters such that making output channels much deeper, and also added dropout function in each Fully-connected layer. Initially parameters were just guessed and then continuously adjusted by trial and error. The adjusted architecture had some overfitting issues, so that I had to try using dropout layers by spending some time fine-tunning its parameters. By using dropout layers, the dependency of training dataset could be minimized, so I could solve the overfitting issue quite effectively.
-
-While mostly tuning the parameters, I felt that I need to figure out further about the mechanism of deep neural network, so that I could minimize spending hours to find the best suitable parameters.
 
 
 If an iterative approach was chosen:
@@ -291,11 +280,15 @@ If an iterative approach was chosen:
 * Which parameters were tuned? How were they adjusted and why?
 * What are some of the important design choices and why were they chosen? For example, why might a convolution layer work well with this problem? How might a dropout layer help with creating a successful model?
 
-If a well known architecture was chosen:
-* What architecture was chosen?
-* Why did you believe it would be relevant to the traffic sign application?
-* How does the final model's accuracy on the training, validation and test set provide evidence that the model is working well?
- 
+
+
+I first implemented the same architecture from the model I learnt in the LeNet Lab. It went well with over 85% validation accuracy, but still needed some modification to reach out to over 93% validation accuracy. 
+To overcome the underfitting issue, I mainly tuned some parameters such that making output channels much deeper, and also added dropout function in each Fully-connected layer. Initially parameters were just guessed and then continuously adjusted by trial and error. 
+The adjusted architecture had some overfitting issues, so that I had to try using dropout layers by spending some time fine-tunning its parameters. By using dropout layers, the dependency of training dataset could be minimized, so I could solve the overfitting issue quite effectively.
+
+While mostly tuning the parameters, I felt that I need to figure out further about the mechanism of deep neural network, so that I could minimize spending hours to find the best suitable parameters.
+
+
 
 ### Test a Model on New Images
 
@@ -305,7 +298,7 @@ Here are some German traffic signs that I found on the web:
 
 ![webimages][image19]
 
-I guess the second image might be difficult to classify because it seems zoomed in too much. It's better to have somewhat margins around the signs to recognize the images well. What's worse, the second image "STOP" has fewer training dataset compared to the others, so that it would be one of the tricky images to be classified.
+I guess the second image might be difficult to classify because it seems zoomed in too much. It's better to have somewhat margins around the signs to recognize the images well. What's worse, the second image "STOP" has fewer training dataset compared to others, so that it would be one of the tricky images to be classified.
 
 
 #### 2. Discuss the model's predictions on these new traffic signs and compare the results to predicting on the test set. At a minimum, discuss what the predictions were, the accuracy on these new predictions, and compare the accuracy to the accuracy on the test set (OPTIONAL: Discuss the results in more detail as described in the "Stand Out Suggestions" part of the rubric).
@@ -315,13 +308,13 @@ Here are the results of the prediction:
 | Image			        |     Prediction	        					| 
 |:---------------------:|:---------------------------------------------:| 
 | Speed Limit (30km/h)      		| Speed Limit (30km/h)   									| 
-| Stop     			| Traffic Sign 										|
+| Stop     			| Bumpy road 										|
 | Priority road					| Priority road											|
 | Road work	      		| Road work					 				|
 | Yield			| Yield
 
 4 out of 5 images were classified correctly. It indicates the network has accuracy of 80% on these images, and it may not compare favorably to the accuracy on the test set of 92.8%. 
-As the original image 'Stop' was predicted as a 'Traffic Sign' image, I also suspect the model has trouble prediction on 'Traffic Sign' images.
+As the original image 'Stop' was predicted as a 'Bumpy road' image, I also suspect the model has trouble prediction on 'Bumpy road' images.
 I consider that further augmenting techniques including rotation, translation, zoom, flip would improve the model's performance well.
 
 #### 3. Describe how certain the model is when predicting on each of the five new images by looking at the softmax probabilities for each prediction. Provide the top 5 softmax probabilities for each image along with the sign type of each probability. (OPTIONAL: as described in the "Stand Out Suggestions" part of the rubric, visualizations can also be provided such as bar charts)
@@ -337,4 +330,5 @@ The top five soft max probabilities on each image are :
 ### (Optional) Visualizing the Neural Network (See Step 4 of the Ipython notebook for more details)
 #### 1. Discuss the visual output of your trained network's feature maps. What characteristics did the neural network use to make classifications?
 
+- I'll do the task later on.
 
